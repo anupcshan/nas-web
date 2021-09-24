@@ -1,0 +1,27 @@
+name: Release Go Binaries
+
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+
+env:
+  CMD_PATH: .
+
+
+jobs:
+  releases-matrix:
+    name: Release Go binary
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goos: [linux]
+        goarch: [amd64, arm64, arm]
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: wangyoucao577/go-release-action@v1.20
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        goos: ${{ matrix.goos }}
+        goarch: ${{ matrix.goarch }}
