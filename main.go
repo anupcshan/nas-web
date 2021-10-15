@@ -64,6 +64,11 @@ func main() {
 			"/usr/bin/smbstatus",
 			[]string{"-v"},
 		},
+		{
+			"iSCSI status",
+			"/usr/sbin/tgtadm",
+			[]string{"--mode", "target", "--op", "show"},
+		},
 	}
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
