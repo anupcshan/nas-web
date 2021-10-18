@@ -1,11 +1,16 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"os/exec"
 )
+
+// Set by go build flags
+var version string
 
 var header = `<html>
 <head>
@@ -38,6 +43,14 @@ type command struct {
 }
 
 func main() {
+	versionOnly := flag.Bool("version", false, "Print version number and exit")
+	flag.Parse()
+
+	if *versionOnly {
+		fmt.Printf(version)
+		os.Exit(0)
+	}
+
 	commands := []command{
 		{
 			"Uptime",
