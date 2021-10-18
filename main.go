@@ -1,9 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
-	"log"
+	"io"
 	"net/http"
 	"os"
 	"os/exec"
@@ -22,6 +23,12 @@ h1 {
 
 pre {
 	background-color: #ddd;
+	border-radius: 1em;
+	padding: 1em;
+}
+
+pre.error {
+	background-color: red;
 	border-radius: 1em;
 	padding: 1em;
 }
@@ -88,14 +95,29 @@ func main() {
 		w.Write([]byte(header))
 		for _, command := range commands {
 			w.Write([]byte(fmt.Sprintf("<h1>%s</h1>\n", command.header)))
-			w.Write([]byte("<pre>\n"))
 			cmd := exec.Command(command.cmd, command.args...)
-			cmd.Stdout = w
+			stdout := &bytes.Buffer{}
+			stderr := &bytes.Buffer{}
+
+			cmd.Stdout = stdout
+			cmd.Stderr = stderr
 			if err := cmd.Run(); err != nil {
-				log.Println(err)
-				return
+				w.Write([]byte("<pre class='error'>\n"))
+				w.Write([]byte(fmt.Sprintf("err: %s\n", err)))
+				w.Write([]byte("</pre>\n"))
+
+				w.Write([]byte("<pre class='error'>\n"))
+				w.Write([]byte(fmt.Sprintf("stderr: %s\n", stderr.String())))
+				w.Write([]byte("</pre>\n"))
+
+				w.Write([]byte("<pre>\n"))
+				w.Write([]byte(fmt.Sprintf("stdout: %s\n", stdout.String())))
+				w.Write([]byte("</pre>\n"))
+			} else {
+				w.Write([]byte("<pre>\n"))
+				io.Copy(w, stdout)
+				w.Write([]byte("</pre>\n"))
 			}
-			w.Write([]byte("</pre>\n"))
 		}
 	})
 	http.ListenAndServe(":9999", nil)
