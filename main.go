@@ -72,7 +72,7 @@ func main() {
 		{
 			"ZFS status",
 			"/usr/sbin/zfs",
-			[]string{"list"},
+			[]string{"list", "-o", "space,mountpoint"},
 		},
 		{
 			"Sanoid status",
