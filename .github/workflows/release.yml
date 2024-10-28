@@ -24,7 +24,7 @@ jobs:
       id: get_version
       run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
 
-    - uses: wangyoucao577/go-release-action@v1.28
+    - uses: wangyoucao577/go-release-action@v1.52
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         goos: ${{ matrix.goos }}
