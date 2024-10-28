@@ -51,6 +51,7 @@ type command struct {
 
 func main() {
 	versionOnly := flag.Bool("version", false, "Print version number and exit")
+	listen := flag.String("listen", ":9999", "Listen address")
 	flag.Parse()
 
 	if *versionOnly {
@@ -68,6 +69,11 @@ func main() {
 			"Zpool status",
 			"/usr/sbin/zpool",
 			[]string{"status"},
+		},
+		{
+			"Zpool list",
+			"/usr/sbin/zpool",
+			[]string{"list", "-v"},
 		},
 		{
 			"ZFS status",
@@ -119,6 +125,7 @@ func main() {
 				w.Write([]byte("</pre>\n"))
 			}
 		}
+		w.Write([]byte(footer))
 	})
-	http.ListenAndServe(":9999", nil)
+	http.ListenAndServe(*listen, nil)
 }
